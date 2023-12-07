@@ -1,0 +1,12 @@
+# nginx state for serving content
+FROM nginx:alpine
+
+ENV REACT_APP_SERVER_URL=https://localhost:26043
+
+COPY build-prod /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY ./nginx/nginx.conf /etc/nginx/conf.d
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+#COPY build /usr/share/nginx/html

@@ -1,0 +1,14 @@
+{
+  "category": [
+    {
+      "id": 1,
+      "name": "Barriles",
+      "status": 1
+    },
+    {
+      "id": 2,
+      "name": "Etanol",
+      "status": 1
+    }
+  ]
+}
