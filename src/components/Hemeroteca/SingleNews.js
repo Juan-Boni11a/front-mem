@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import { ModalTextField, ModalFormControl, InputLabelGreyStyled, ButtonStyled } from "../../utils/StyledComponents";
 import { MenuItem, Select, Box } from "@mui/material";
 import { getAllMedios } from "../../state/services/newsServices/mediaServices";
+import { getAllTypeInfo } from "../../state/services/newsServices/typeInfoServices";
+import { getSubsectorsBySector } from "../../state/services/newsServices/subsectorServices";
 
 function SingleNews(props) {
 
+  //Iniciamos variables
   const [fechaRegistro, setFechaRegistro] = useState("");
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [fechaNoticia, setFechaNoticia] = useState("");
@@ -19,9 +22,8 @@ function SingleNews(props) {
   const [resumen, setResumen] = useState("");
   const [opinion, setOpinion] = useState("");
   const [comentario, setComentario] = useState("");
-
   const [imagen, setImagen] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);//Guardamos imagen a visualizar
 
 
   const { submitAction, buttonName, news, edit } = props;
@@ -47,11 +49,13 @@ function SingleNews(props) {
     }
   }, [news]);
 
+  //Construimos el objeto principal a guardar
   const buildNews = () => {
     return { imagen, fechaRegistro, nombreUsuario, fechaNoticia, seccion, noPagina, sector, subsector, informacion, medio, fuente, tendencia, resumen, opinion, comentario };
 
   }
 
+  //Cargamos la imagen a nuestra variable
   const handleImageChange = (e) => {
     const selectedImage = e.target.files[0];
     setImagen(selectedImage);
@@ -68,8 +72,8 @@ function SingleNews(props) {
     }
   };
 
-
-const [mediosOptions, setMediosOptions] = useState([]);
+  //Cargamos los valores para la seccion de Medios en el Formulario
+  const [mediosOptions, setMediosOptions] = useState([]);
 
   useEffect(() => {
     // Cargar los medios al montar el componente
@@ -88,6 +92,58 @@ const [mediosOptions, setMediosOptions] = useState([]);
     fetchMedios();
   }, []);
 
+  //Cargamos los valores para la seccion de Tipo en el Formulario
+  const [tipoOptions, setTipoOptions] = useState([]);
+
+  useEffect(() => {
+    // Cargar los medios al montar el componente
+    async function fetchTipos() {
+      try {
+        const tiposData = await getAllTypeInfo();
+        // Extraer los nombres de los Tipos de Informacion
+        const informacionNombres = tiposData.map((informacion) => informacion.nombre);
+        setTipoOptions(informacionNombres);
+      } catch (error) {
+        console.error('Error al cargar los Tipos:', error);
+        // Manejar el error según tus necesidades
+      }
+    }
+
+    fetchTipos();
+  }, []);
+
+
+  const [subsectoresOptions, setSubsectoresOptions] = useState([]);
+
+  useEffect(() => {
+    // Cargar subsectores al cambiar el valor del sector
+    async function fetchSubsectors() {
+      try {
+        const subsectoresData = await getSubsectorsBySector(sector === 'Hidrocarburos');
+        const subsectoresNombres = subsectoresData.map((subsector) => subsector.nombre);
+        setSubsectoresOptions(subsectoresNombres);
+      } catch (error) {
+        console.error('Error al cargar los subsectores:', error);
+        // Manejar el error según tus necesidades
+      }
+    }
+
+    fetchSubsectors();
+  }, [sector]);
+
+  useEffect(() => {
+    // Función para obtener la fecha actual en el formato "YYYY-MM-DD"
+    const obtenerFechaActual = () => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    // Establecer la fecha actual al cargar el componente
+    setFechaRegistro(obtenerFechaActual());
+  }, []);
   return (
     <form onSubmit={(e) => {
       e.preventDefault();
@@ -95,13 +151,13 @@ const [mediosOptions, setMediosOptions] = useState([]);
       submitAction(news);
     }}>
 
-{imagen && (
-  <img
-    src={`data:image/jpeg;base64,${imagen}`}
-    alt="Imagen de la noticia"
-    style={{ width: '300px', height: '300px', objectFit: 'cover' }}
-  />
-)}
+      {imagen && (
+        <img
+          src={`data:image/jpeg;base64,${imagen}`}
+          alt="Imagen de la noticia"
+          style={{ width: '300px', height: '300px', objectFit: 'cover' }}
+        />
+      )}
 
 
 
@@ -122,7 +178,7 @@ const [mediosOptions, setMediosOptions] = useState([]);
         }}
       />
 
-<ModalTextField
+      <ModalTextField
         size="small"
         label={"Nombre de Usuario"}
         value={nombreUsuario}
@@ -169,7 +225,7 @@ const [mediosOptions, setMediosOptions] = useState([]);
         }}
       />
 
-<ModalTextField
+      <ModalTextField
         size="small"
         label={"No. Página"}
         type="number"
@@ -195,6 +251,8 @@ const [mediosOptions, setMediosOptions] = useState([]);
           label="Sector"
           onChange={(e) => {
             setSector(e.target.value);
+            // Reiniciar la selección de subsector cuando se cambia el sector
+            setSubsector('');
           }}
         >
           <MenuItem value={"Hidrocarburos"}>Hidrocarburos</MenuItem>
@@ -215,13 +273,16 @@ const [mediosOptions, setMediosOptions] = useState([]);
             setSubsector(e.target.value);
           }}
         >
-          <MenuItem value={"Subsector1"}>Subsector 1</MenuItem>
-          <MenuItem value={"Subsector2"}>Subsector 2</MenuItem>
-          {/* Otros valores para subsector */}
+          {subsectoresOptions.map((subsectorOption) => (
+            <MenuItem key={subsectorOption} value={subsectorOption}>
+              {subsectorOption}
+            </MenuItem>
+          ))}
         </Select>
       </ModalFormControl>
 
-<ModalFormControl>
+
+      <ModalFormControl>
         <InputLabelGreyStyled id="informacion">Tipo de Información</InputLabelGreyStyled>
         <Select
           size="small"
@@ -233,32 +294,34 @@ const [mediosOptions, setMediosOptions] = useState([]);
             setInformacion(e.target.value);
           }}
         >
-          <MenuItem value={"Tipo 1"}>Tipo 1</MenuItem>
-          <MenuItem value={"Tipo 2"}>Tipo 2</MenuItem>
-       
+          {tipoOptions.map((tipoOption) => (
+            <MenuItem key={tipoOption} value={tipoOption}>
+              {tipoOption}
+            </MenuItem>
+          ))}
         </Select>
       </ModalFormControl>
 
 
       <ModalFormControl>
-      <InputLabelGreyStyled id="medio">Medio de Comunicación</InputLabelGreyStyled>
-      <Select
-        size="small"
-        labelId="medio"
-        value={medio}
-        disabled={!edit}
-        label="Medio"
-        onChange={(e) => {
-          setMedio(e.target.value);
-        }}
-      >
-        {mediosOptions.map((medioOption) => (
-          <MenuItem key={medioOption} value={medioOption}>
-            {medioOption}
-          </MenuItem>
-        ))}
-      </Select>
-    </ModalFormControl>
+        <InputLabelGreyStyled id="medio">Medio de Comunicación</InputLabelGreyStyled>
+        <Select
+          size="small"
+          labelId="medio"
+          value={medio}
+          disabled={!edit}
+          label="Medio"
+          onChange={(e) => {
+            setMedio(e.target.value);
+          }}
+        >
+          {mediosOptions.map((medioOption) => (
+            <MenuItem key={medioOption} value={medioOption}>
+              {medioOption}
+            </MenuItem>
+          ))}
+        </Select>
+      </ModalFormControl>
 
       <ModalTextField
         size="small"
@@ -275,9 +338,9 @@ const [mediosOptions, setMediosOptions] = useState([]);
         }}
       />
 
-    
 
-      
+
+
 
       <ModalFormControl>
         <InputLabelGreyStyled id="tendencia">Tendencia</InputLabelGreyStyled>
@@ -314,27 +377,27 @@ const [mediosOptions, setMediosOptions] = useState([]);
           },
         }}
       />
-<div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      {previewImage && (
-        <img
-          src={previewImage}
-          alt="Preview"
-          style={{ width: "100px", height: "100px", objectFit: "cover" }}
-        />
-      )}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {previewImage && (
+          <img
+            src={previewImage}
+            alt="Preview"
+            style={{ width: "100px", height: "100px", objectFit: "cover" }}
+          />
+        )}
 
-      <input
-        type="file"
-        onChange={handleImageChange}
-        disabled={!edit}
-      />
-    </div>
+        <input
+          type="file"
+          onChange={handleImageChange}
+          disabled={!edit}
+        />
+      </div>
 
       <ModalTextField
         size="small"

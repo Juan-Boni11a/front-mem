@@ -6,7 +6,7 @@ const serverUrl = 'http://localhost:8080';
 
 export const getAllTypeInfo = async () => {
     const response = await axios.get(
-        `${serverUrl}/typeInfo`
+        `${serverUrl}/typeinfo`
     );
 
     return response.data;
@@ -14,7 +14,7 @@ export const getAllTypeInfo = async () => {
 
 export const getTypeInfoById = async (id) => {
     try {
-        const response = await axios.get(`${serverUrl}/typeInfo/${id}`);
+        const response = await axios.get(`${serverUrl}/typeinfo/${id}`);
         return response.data;
     } catch (error) {
         console.error("Error al obtener el medio por ID:", error);
@@ -24,7 +24,7 @@ export const getTypeInfoById = async (id) => {
 
 export const createTypeInfo = async (body) => {
     const response = await axios.post(
-        `${serverUrl}/typeInfo`,
+        `${serverUrl}/typeinfo`,
         body
     );
 
@@ -33,7 +33,7 @@ export const createTypeInfo = async (body) => {
 
 export const updateTypeInfo = async (id, body) => {
     try {
-        const response = await axios.put(`${serverUrl}/typeInfo/${id}`, body);
+        const response = await axios.put(`${serverUrl}/typeinfo/${id}`, body);
         return response.data;
     } catch (error) {
         console.error("Error al actualizar el medio por ID:", error);

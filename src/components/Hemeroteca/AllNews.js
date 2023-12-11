@@ -67,6 +67,7 @@ function AllNews() {
                             <TableRow>
                                 <StyledTableCell> </StyledTableCell>
                                 <StyledTableCell> Imagen </StyledTableCell>
+                                <StyledTableCell> Sector </StyledTableCell>
                                 <StyledTableCell> Resumen </StyledTableCell>
                                 <StyledTableCell> Fecha </StyledTableCell>
                             </TableRow>
@@ -98,6 +99,7 @@ function AllNews() {
                                                 style={{ width: "120px", height: "120px", objectFit: "cover" }}
                                             />
                                         </StyledTableCell>
+                                        <StyledTableCell> {cat.sector} </StyledTableCell>
                                         <StyledTableCell> {cat.resumen} </StyledTableCell>
                                         <StyledTableCell> {cat.fechaNoticia} </StyledTableCell>
                                     </StyledTableRow>

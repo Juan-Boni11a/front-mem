@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { ModalTextField, ModalFormControl, InputLabelGreyStyled, ButtonStyled } from "../../../utils/StyledComponents";
-import { MenuItem, Select, Box, TextField } from "@mui/material";
-
+import { MenuItem, Select, Box } from "@mui/material";
 
 function SingleTransportation(props) {
-
-    const [estado, setEstado] = useState("");
 
     const [fechaSalida, setFechaSalida] = useState("");
     const [fechaRetorno, setFechaRetorno] = useState("");
@@ -28,7 +25,7 @@ function SingleTransportation(props) {
 
     useEffect(() => {
         if (transportation) {
-            setEstado(transportation.estado);
+
             setFechaSalida(transportation.fechaSalida);
             setFechaRetorno(transportation.fechaRetorno);
             setHoraSalida(transportation.horaSalida);
@@ -48,7 +45,6 @@ function SingleTransportation(props) {
 
     const buildTransportation = () => {
         return {
-            estado,
             fechaSalida,
             fechaRetorno,
             horaSalida,
@@ -74,26 +70,6 @@ function SingleTransportation(props) {
             const Transportation = buildTransportation();
             submitAction(Transportation);
         }}>
-
-<ModalFormControl>
-                <InputLabelGreyStyled id="Estado">Estado de Solicitud</InputLabelGreyStyled>
-                <Select
-                    size="small"
-                    labelId="estado"
-                    value={estado}
-                    disabled={!edit}
-                    label="Estado"
-                    onChange={(e) => {
-                        setEstado(e.target.value);
-                    }}
-                >
-                    <MenuItem value={"pendiente"}>Pendiente</MenuItem>
-                    <MenuItem value={"aprobado"}>Aprobar</MenuItem>
-                    <MenuItem value={"rechazado"}>Rechazar</MenuItem>
-                    
-                    {/* Otros valores para departamento */}
-                </Select>
-            </ModalFormControl>
 
 
             <ModalTextField
@@ -130,58 +106,50 @@ function SingleTransportation(props) {
                 }}
             />
 
-<ModalTextField
-        size="small"
-        label="Hora de Salida"
-        type="time"
-        value={horaSalida}
-        required
-        disabled={!edit}
-        onChange={(e) => setHoraSalida(e.target.value)}
-        InputLabelProps={{
-          style: {
-            color: "#1b365d",
-            fontWeight: 900,
-          },
-        }}
-      />
-<ModalTextField
-        size="small"
-        label="Hora de Retorno"
-        type="time"
-        value={horaRetorno}
-        required
-        disabled={!edit}
-        onChange={(e) => setHoraRetorno(e.target.value)}
-        InputLabelProps={{
-          style: {
-            color: "#1b365d",
-            fontWeight: 900,
-          },
-        }}
-      />
+            <ModalTextField
+                size="small"
+                label={"Hora de Salida"}
+                value={horaSalida}
+                required
+                disabled={!edit}
+                onChange={(e) => setHoraSalida(e.target.value)}
+                InputLabelProps={{
+                    style: {
+                        color: "#1b365d",
+                        fontWeight: 900,
+                    },
+                }}
+            />
 
+            <ModalTextField
+                size="small"
+                label={"Hora de Retorno"}
+                value={horaRetorno}
+                required
+                disabled={!edit}
+                onChange={(e) => setHoraRetorno(e.target.value)}
+                InputLabelProps={{
+                    style: {
+                        color: "#1b365d",
+                        fontWeight: 900,
+                    },
+                }}
+            />
 
-
-      
-
-<ModalFormControl>
-                <InputLabelGreyStyled id="funcionario">Funcionario</InputLabelGreyStyled>
-                <Select
-                    size="small"
-                    labelId="funcionario"
-                    value={funcionario}
-                    disabled={!edit}
-                    label="Departamento"
-                    onChange={(e) => {
-                        setFuncionario(e.target.value);
-                    }}
-                >
-                    <MenuItem value={"Alejandro Gomez"}>Alejandro Gomez</MenuItem>
-                    <MenuItem value={"Pablo Solis"}>Pablo Solis</MenuItem>
-                    {/* Otros valores para departamento */}
-                </Select>
-            </ModalFormControl>
+            <ModalTextField
+                size="small"
+                label={"Funcionario"}
+                value={funcionario}
+                required
+                disabled={!edit}
+                onChange={(e) => setFuncionario(e.target.value)}
+                InputLabelProps={{
+                    style: {
+                        color: "#1b365d",
+                        fontWeight: 900,
+                    },
+                }}
+            />
 
             <ModalFormControl>
                 <InputLabelGreyStyled id="departamento">Departamento</InputLabelGreyStyled>
