@@ -1,51 +1,51 @@
 import { useRecoilState } from "recoil";
-import { allSupplyAtom } from "../../../state/atoms/supplyAtoms";
+import { allFuncionariosAtom } from "../../../../state/atoms/funcionarioAtoms";
 import { useState, useEffect } from "react";
 import {
     Box, TableContainer, Paper, Table, TableHead, TableRow,
     TableBody,
     IconButton, Avatar
 } from "@mui/material";
-import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from "../../../utils/StyledComponents";
-import MainLayout from "../../../commons/MainLayout";
-import WorkspaceHeader from "../../../commons/WorkspaceHeader";
-import { getAllSupply } from "../../../state/services/transportServices/supplyServices";
-import AddSupply from "./AddSupply";
+import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from "../../../../utils/StyledComponents";
+import MainLayout from "../../../../commons/MainLayout";
+import WorkspaceHeader from "../../../../commons/WorkspaceHeader";
+import { getAllFuncionarios } from "../../../../state/services/transportServices/funcionarioServices";
+import AddFuncionario from "./AddFuncionario";
 import {  Edit } from "@mui/icons-material";
-import ManageSupply from "./ManageSupply";
+import ManageFuncionarios from "./ManageFuncionarios";
 
-function AllSupply() {
+function AllFuncionarios() {
 
-    const [actualSupplyList, setActualSupplyList] = useRecoilState(allSupplyAtom);
-    const [openSupplyForm, setOpenSupplyForm] = useState(false);
+    const [actualFuncionarioList, setActualFuncionarioList] = useRecoilState(allFuncionariosAtom);
+    const [openFuncionarioForm, setOpenFuncionarioForm] = useState(false);
     const [openManageForm, setOpenManageForm] = useState(false);
-    const [supplyToShow, setSupplyToShow] = useState(null);
+    const [funcionarioToShow, setFuncionarioToShow] = useState(null);
 
     useEffect(() => {
-        getSupply();
+        getFuncionario();
     }, []);
 
-    const getSupply = () => {
-        getAllSupply().then((data) => {
-            setActualSupplyList(data)
+    const getFuncionario = () => {
+        getAllFuncionarios().then((data) => {
+            setActualFuncionarioList(data)
             
         })
     }
 
-    const callOpenSupplyForm = () => {
-        setOpenSupplyForm(true);
+    const callOpenFuncionarioForm = () => {
+        setOpenFuncionarioForm(true);
     }
 
     const callOpenManageForm = (el) => {
-        setSupplyToShow(el);
+        setFuncionarioToShow(el);
         setOpenManageForm(true);
     }
 
     const closeModals = () => {
 
-        setOpenSupplyForm(false);
+        setOpenFuncionarioForm(false);
         setOpenManageForm(false);
-        getSupply();
+        getFuncionario();
 
     }
 
@@ -54,7 +54,7 @@ function AllSupply() {
 
         <MainLayout>
             <WorkspaceHeader
-                title="Solicitud de Abastecimiento de Combustible"
+                title="Administrador de Funcionarios"
                 showSearch={false}
                 onSearch={() => { }}
             />
@@ -74,11 +74,11 @@ function AllSupply() {
                                     <Box />
                                 </StyledTableCell>
 
-                                <StyledTableCell> Fecha de Abastecimiento </StyledTableCell>
+                                <StyledTableCell> id </StyledTableCell>
 
-                                <StyledTableCell> Vehiculo </StyledTableCell>
+                                <StyledTableCell> Nombre </StyledTableCell>
 
-                                <StyledTableCell> Conductor </StyledTableCell>
+                                
 
                             </TableRow>
 
@@ -88,7 +88,7 @@ function AllSupply() {
                         <TableBody>
 
                             {
-                                actualSupplyList?.map((cat, index) => {
+                                actualFuncionarioList?.map((cat, index) => {
                                     return (
                                         <StyledTableRow key={cat.id}>
                                             <StyledTableCell>
@@ -107,11 +107,11 @@ function AllSupply() {
 
                                                 </IconButton>
                                             </StyledTableCell>
-                                            <StyledTableCell>
-                                            <StyledTableCell> {cat.fechaAbastecimiento} </StyledTableCell>
-                                            </StyledTableCell>
-                                            <StyledTableCell> {cat.vehiculo} </StyledTableCell>
-                                            <StyledTableCell> {cat.conductor} </StyledTableCell>
+                                           
+                                            <StyledTableCell> {cat.id} </StyledTableCell>
+                                            
+                                            <StyledTableCell> {cat.name} </StyledTableCell>
+                                          
                                         </StyledTableRow>
                                     )
 
@@ -138,19 +138,19 @@ function AllSupply() {
                         margin: 1,
                         width: "30%",
                     }}
-                    onClick={callOpenSupplyForm}
+                    onClick={callOpenFuncionarioForm}
                 >
                     Nuevo
                 </ButtonStyled>
             </Box>
 
-            <ModalContainer open={openSupplyForm}>
+            <ModalContainer open={openFuncionarioForm}>
 
                 <ModalInputBox>
 
-                    <AddSupply onClose={closeModals}>
+                    <AddFuncionario onClose={closeModals}>
 
-                    </AddSupply>
+                    </AddFuncionario>
 
                 </ModalInputBox>
 
@@ -160,9 +160,9 @@ function AllSupply() {
 
                 <ModalInputBox>
 
-                    <ManageSupply supplyToShow={supplyToShow} onClose={closeModals}>
+                    <ManageFuncionarios funcionarioToShow={funcionarioToShow} onClose={closeModals}>
 
-                    </ManageSupply>
+                    </ManageFuncionarios>
 
                 </ModalInputBox>
 
@@ -173,4 +173,4 @@ function AllSupply() {
 
 }
 
-export default AllSupply;
+export default AllFuncionarios;

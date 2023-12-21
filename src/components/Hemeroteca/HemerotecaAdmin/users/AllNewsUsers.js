@@ -1,60 +1,60 @@
 import { useRecoilState } from "recoil";
-import { allTransportationAtom } from "../../../state/atoms/transportationAtoms";
+import { allNewsUsersAtom } from "../../../../state/atoms/NewsUserAtoms";
 import { useState, useEffect } from "react";
 import {
     Box, TableContainer, Paper, Table, TableHead, TableRow,
     TableBody,
     IconButton, Avatar
 } from "@mui/material";
-import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from "../../../utils/StyledComponents";
-import MainLayout from "../../../commons/MainLayout";
-import WorkspaceHeader from "../../../commons/WorkspaceHeader";
-import { getAllTransportation } from "../../../state/services/transportServices/transportationServices";
-import AddTransportation from "./AddTransportation";
+import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from "../../../../utils/StyledComponents";
+import SecondLayout from "../../../../commons/SecondLayout";
+import WorkspaceHeader from "../../../../commons/WorkspaceHeader";
+import { getAllUsers } from "../../../../state/services/catalogServices/NewsUserServices";
+import AddUsers from "./AddUsers";
 import {  Edit } from "@mui/icons-material";
-import ManageTransportation from "./ManageTransportation";
+import ManageUsers from "./ManageUsers";
 
-function AllTransportation() {
+function AllNewsUsers() {
 
-    const [actualTransportationList, setActualTransportationList] = useRecoilState(allTransportationAtom);
-    const [openTransportationForm, setOpenTransportationForm] = useState(false);
+    const [actualUserList, setActualUserList] = useRecoilState(allNewsUsersAtom);
+    const [openUserForm, setOpenUserForm] = useState(false);
     const [openManageForm, setOpenManageForm] = useState(false);
-    const [transportationToShow, setTransportationToShow] = useState(null);
+    const [userToShow, setUserToShow] = useState(null);
 
     useEffect(() => {
-        getTransportation();
+        getUser();
     }, []);
 
-    const getTransportation = () => {
-        getAllTransportation().then((data) => {
-            setActualTransportationList(data)
+    const getUser = () => {
+        getAllUsers().then((data) => {
+            setActualUserList(data)
             
         })
     }
 
-    const callOpenTransportationForm = () => {
-        setOpenTransportationForm(true);
+    const callOpenUserForm = () => {
+        setOpenUserForm(true);
     }
 
     const callOpenManageForm = (el) => {
-        setTransportationToShow(el);
+        setUserToShow(el);
         setOpenManageForm(true);
     }
 
     const closeModals = () => {
 
-        setOpenTransportationForm(false);
+        setOpenUserForm(false);
         setOpenManageForm(false);
-        getTransportation();
+        getUser();
 
     }
 
 
     return (
 
-        <MainLayout>
+        <SecondLayout>
             <WorkspaceHeader
-                title="Solicitud de Transporte"
+                title="Administrador de Usuarios"
                 showSearch={false}
                 onSearch={() => { }}
             />
@@ -74,12 +74,11 @@ function AllTransportation() {
                                     <Box />
                                 </StyledTableCell>
 
-                                <StyledTableCell> Funcionario </StyledTableCell>
+                                <StyledTableCell> Nombre </StyledTableCell>
 
-                                <StyledTableCell> Fecha Salida</StyledTableCell>
+                                <StyledTableCell> Rol Asignado </StyledTableCell>
 
-                                <StyledTableCell> Destino </StyledTableCell>
-                                <StyledTableCell> Estado </StyledTableCell>
+                                
 
                             </TableRow>
 
@@ -89,7 +88,7 @@ function AllTransportation() {
                         <TableBody>
 
                             {
-                                actualTransportationList?.map((cat, index) => {
+                                actualUserList?.map((cat, index) => {
                                     return (
                                         <StyledTableRow key={cat.id}>
                                             <StyledTableCell>
@@ -108,12 +107,11 @@ function AllTransportation() {
 
                                                 </IconButton>
                                             </StyledTableCell>
-                                            <StyledTableCell>
-                                            <StyledTableCell> {cat.funcionario} </StyledTableCell>
-                                            </StyledTableCell>
-                                            <StyledTableCell> {cat.fechaSalida} </StyledTableCell>
-                                            <StyledTableCell> {cat.destino} </StyledTableCell>
-                                            <StyledTableCell> {cat.estado} </StyledTableCell>
+                                           
+                                            <StyledTableCell> {cat.username} </StyledTableCell>
+                                            
+                                            <StyledTableCell> {cat.roles} </StyledTableCell>
+                                          
                                         </StyledTableRow>
                                     )
 
@@ -140,19 +138,19 @@ function AllTransportation() {
                         margin: 1,
                         width: "30%",
                     }}
-                    onClick={callOpenTransportationForm}
+                    onClick={callOpenUserForm}
                 >
                     Nuevo
                 </ButtonStyled>
             </Box>
 
-            <ModalContainer open={openTransportationForm}>
+            <ModalContainer open={openUserForm}>
 
                 <ModalInputBox>
 
-                    <AddTransportation onClose={closeModals}>
+                    <AddUsers onClose={closeModals}>
 
-                    </AddTransportation>
+                    </AddUsers>
 
                 </ModalInputBox>
 
@@ -162,17 +160,17 @@ function AllTransportation() {
 
                 <ModalInputBox>
 
-                    <ManageTransportation transportationToShow={transportationToShow} onClose={closeModals}>
+                    <ManageUsers userToShow={userToShow} onClose={closeModals}>
 
-                    </ManageTransportation>
+                    </ManageUsers>
 
                 </ModalInputBox>
 
             </ModalContainer>
 
-        </MainLayout>
+        </SecondLayout>
     )
 
 }
 
-export default AllTransportation;
+export default AllNewsUsers;

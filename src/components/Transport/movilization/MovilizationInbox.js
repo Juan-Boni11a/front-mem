@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import { allTransportationAtom } from '../../../state/atoms/transportationAtoms';
+import { allMovilizationAtom } from '../../../state/atoms/movilizationAtoms';
 import {
   Box,
   TableContainer,
@@ -14,45 +14,46 @@ import {
 import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from '../../../utils/StyledComponents';
 import MainLayout from '../../../commons/MainLayout';
 import WorkspaceHeader from '../../../commons/WorkspaceHeader';
-import { getAllTransportation } from '../../../state/services/transportServices/transportationServices';
-import AddTransportation from './AddTransportation';
+import { getAllMovilization } from '../../../state/services/transportServices/movilizationServices';
+import AddMovilization from '../movilization/AddMovilization';
 import { Edit } from '@mui/icons-material';
-import ManageTransportation from './ManageTransportation';
+import Decide from './Decide';
 
-function AllTransportation() {
-  const [actualTransportationList, setActualTransportationList] = useRecoilState(allTransportationAtom);
-  const [openTransportationForm, setOpenTransportationForm] = useState(false);
+
+function MovilizationInbox() {
+  const [actualMovilizationList, setActualMovilizationList] = useRecoilState(allMovilizationAtom);
+  const [openMovilizationForm, setOpenMovilizationForm] = useState(false);
   const [openManageForm, setOpenManageForm] = useState(false);
-  const [transportationToShow, setTransportationToShow] = useState(null);
+  const [movilizationToShow, setMovilizationToShow] = useState(null);
 
   useEffect(() => {
-    getTransportation();
+    getMovilization();
   }, []);
 
-  const getTransportation = () => {
-    getAllTransportation().then((data) => {
-      setActualTransportationList(data);
+  const getMovilization = () => {
+    getAllMovilization().then((data) => {
+      setActualMovilizationList(data);
     });
   };
 
-  const callOpenTransportationForm = () => {
-    setOpenTransportationForm(true);
+  const callOpenMovilizationForm = () => {
+    setOpenMovilizationForm(true);
   };
 
   const callOpenManageForm = (el) => {
-    setTransportationToShow(el);
+    setMovilizationToShow(el);
     setOpenManageForm(true);
   };
 
   const closeModals = () => {
-    setOpenTransportationForm(false);
+    setOpenMovilizationForm(false);
     setOpenManageForm(false);
-    getTransportation();
+    getMovilization();
   };
 
   return (
     <MainLayout>
-      <WorkspaceHeader title="Solicitud de Transporte" showSearch={false} onSearch={() => {}} />
+      <WorkspaceHeader title="Bandeja de Entrada/Solicitud de Movilizacion" showSearch={false} onSearch={() => { }} />
 
       <Box sx={{ width: '100%', marginTop: '2vh', maxHeight: '70%', overflowY: 'auto' }}>
         <TableContainer component={Paper} sx={{ borderRadius: '10px', height: '100%' }}>
@@ -60,15 +61,17 @@ function AllTransportation() {
             <TableHead>
               <TableRow>
                 <StyledTableCell> </StyledTableCell>
-                <StyledTableCell> Funcionario </StyledTableCell>
-                <StyledTableCell> Fecha Salida </StyledTableCell>
-                <StyledTableCell> Destino </StyledTableCell>
+                <StyledTableCell> Número de Orden </StyledTableCell>
+                <StyledTableCell> Para </StyledTableCell>
+                <StyledTableCell> Vigencia </StyledTableCell>
                 <StyledTableCell> Estado </StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {actualTransportationList?.map((cat, index) => {
-                const dotColor = cat.estado === 'aprobado' ? 'green' : 'red';
+              {actualMovilizationList?.map((cat, index) => {
+                const dotColor = cat.estado === 'Aprobado' ? 'green' : (cat.estado === 'Pendiente' ? 'orange' : 'red');
+
+
                 return (
                   <StyledTableRow key={cat.id}>
                     <StyledTableCell>
@@ -84,11 +87,12 @@ function AllTransportation() {
                         <Edit></Edit>
                       </IconButton>
                     </StyledTableCell>
-                    <StyledTableCell>
-                      <StyledTableCell> {cat.funcionario} </StyledTableCell>
-                    </StyledTableCell>
-                    <StyledTableCell> {cat.fechaSalida} </StyledTableCell>
-                    <StyledTableCell> {cat.destino} </StyledTableCell>
+
+                    <StyledTableCell> {cat.nOrden} </StyledTableCell>
+
+                    <StyledTableCell> {cat.para} </StyledTableCell>
+
+                    <StyledTableCell> {cat.vigencia} </StyledTableCell>
                     <StyledTableCell>
                       {cat.estado}{' '}
                       <span
@@ -110,35 +114,24 @@ function AllTransportation() {
         </TableContainer>
       </Box>
 
-      <Box sx={{ textAlign: 'center' }}>
-        <ButtonStyled
-          sx={{
-            backgroundColor: (theme) => theme.palette.primary.light,
-            margin: 1,
-            width: '30%',
-          }}
-          onClick={callOpenTransportationForm}
-        >
-          Nuevo
-        </ButtonStyled>
-      </Box>
 
-      <ModalContainer open={openTransportationForm}>
+
+      <ModalContainer open={openMovilizationForm}>
         <ModalInputBox>
-          <AddTransportation onClose={closeModals}></AddTransportation>
+          <AddMovilization onClose={closeModals}></AddMovilization>
         </ModalInputBox>
       </ModalContainer>
 
       <ModalContainer open={openManageForm}>
         <ModalInputBox>
-          <ManageTransportation
-            transportationToShow={transportationToShow}
+          <Decide
+            movilizationToShow={movilizationToShow}
             onClose={closeModals}
-          ></ManageTransportation>
+          ></Decide>
         </ModalInputBox>
       </ModalContainer>
     </MainLayout>
   );
 }
 
-export default AllTransportation;
+export default MovilizationInbox;

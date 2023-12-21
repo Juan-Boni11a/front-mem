@@ -6,7 +6,7 @@ import {
     TableBody, TablePagination, IconButton, Avatar
 } from "@mui/material";
 import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from "../../utils/StyledComponents";
-import MainLayout from "../../commons/MainLayout";
+import SecondLayout from "../../commons/SecondLayout";
 import WorkspaceHeader from "../../commons/WorkspaceHeader";
 import { getAllNews } from "../../state/services/catalogServices/newsServices";
 import AddNews from "./AddNews";
@@ -56,7 +56,7 @@ function AllNews() {
     };
 
     return (
-        <MainLayout>
+        <SecondLayout>
             <WorkspaceHeader title="Noticias" showSearch={false} onSearch={() => {}} />
 
             <Box sx={{ width: "100%", marginTop: "2vh", maxHeight: "70%", overflowY: "auto" }}>
@@ -147,7 +147,7 @@ function AllNews() {
                     <ManageNews newsToShow={newsToShow} onClose={closeModals}></ManageNews>
                 </ModalInputBox>
             </ModalContainer>
-        </MainLayout>
+        </SecondLayout>
     );
 }
 

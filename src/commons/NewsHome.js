@@ -1,13 +1,13 @@
 import React from "react";
 import { Box, Card, CardMedia, Divider } from "@mui/material";
 import { TitleStyled } from "../utils/StyledComponents";
-import MainLayout from "./MainLayout";
+import SecondLayout from "./SecondLayout";
 import WorkspaceHeader from "./WorkspaceHeader";
 import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
 
-function Home() {
-  const messageHome = sessionStorage.getItem("message-home");
-  const mainHome = sessionStorage.getItem("main-home");
+function NewsHome() {
+  const messageNewsHome = sessionStorage.getItem("message-Home");
+  const mainNewsHome = sessionStorage.getItem("main-Home");
 
   // Datos de ejemplo para el gráfico de pastel
   const data = [
@@ -20,7 +20,7 @@ function Home() {
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
 
   return (
-    <MainLayout>
+    <SecondLayout>
       <WorkspaceHeader title="Inicio" showSearch={false} onSearch={null} />
       <Box sx={{ width: "100%", height: "70vh" }}>
         <Divider />
@@ -39,7 +39,7 @@ function Home() {
               color: (theme) => theme.palette.primary.main,
             }}
           >
-            {messageHome}
+            {messageNewsHome}
           </TitleStyled>
 
           {/* Agregar gráfico de pastel */}
@@ -74,14 +74,14 @@ function Home() {
             <CardMedia
               sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}
               component="img"
-              image={mainHome}
+              image={mainNewsHome}
               alt="Bienvenida"
             />
           </Card>
         </Box>
       </Box>
-    </MainLayout>
+    </SecondLayout>
   );
 }
 
-export default Home;
+export default NewsHome;

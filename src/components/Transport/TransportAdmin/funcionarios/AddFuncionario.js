@@ -1,17 +1,17 @@
 import { useSetRecoilState } from "recoil";
-import { isLoadingGeneralAtom } from "../../../state/atoms/generalAtom";
-import { createSupply } from "../../../state/services/transportServices/supplyServices";
-import SkeletonModal from "../../pieces/SkeletonModal";
-import SingleSupply from "./SingleSupply";
+import { isLoadingGeneralAtom } from "../../../../state/atoms/generalAtom";
+import { createFuncionarios } from "../../../../state/services/transportServices/funcionarioServices";
+import SkeletonModal from "../../../pieces/SkeletonModal";
+import SingleFuncionario from "./SingleFuncionario";
 
 
-function AddSupply (props){
+function AddFuncionario (props){
     const setIsLoading = useSetRecoilState(isLoadingGeneralAtom);
     const {onClose} = props;
 
-    const submitAction = (Supply) => {
+    const submitAction = (funcionario) => {
         setIsLoading(true);
-        createSupply(Supply).then((data) =>{
+        createFuncionarios(funcionario).then((data) =>{
             console.log(data);
         }).finally(() =>{
             setIsLoading(false);
@@ -22,12 +22,12 @@ function AddSupply (props){
     
 
     <SkeletonModal
-      title={"Nueva Solicitud de Abastecimiento"}
+      title={"Nuevo Funcionario"}
       closeAction={(e) => {
         onClose();
       }}
     >
-        <SingleSupply
+        <SingleFuncionario
             submitAction={submitAction}
             buttonName="Crear"
             edit={true}
@@ -37,4 +37,4 @@ function AddSupply (props){
     );
 }
 
-export default AddSupply;
+export default AddFuncionario;

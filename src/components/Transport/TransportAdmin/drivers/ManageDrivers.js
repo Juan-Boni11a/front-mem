@@ -1,20 +1,20 @@
 import { useState } from "react";
-import SkeletonModal from "../../pieces/SkeletonModal";
+import SkeletonModal from "../../../pieces/SkeletonModal";
 import { Button, Grid, Box } from "@mui/material";
-import SingleTransportation from "./SingleTransportation";
+import SingleDrivers from "./SingleDrivers";
 import { useSetRecoilState } from "recoil";
-import { isLoadingGeneralAtom } from "../../../state/atoms/generalAtom";
-import { updateTransportation } from "../../../state/services/transportServices/transportationServices";
+import { isLoadingGeneralAtom } from "../../../../state/atoms/generalAtom";
+import { updateDrivers } from "../../../../state/services/transportServices/driverServices";
 
-function ManageTransportation(props) {
+function ManageDrivers(props) {
     const [isEdit, setisEdit] = useState(false);
-    const { onClose, transportationToShow } = props;
+    const { onClose, driversToShow } = props;
     const setIsLoading = useSetRecoilState(isLoadingGeneralAtom);
 
-    const submitAction = (transportation) => {
+    const submitAction = (driver) => {
 
         setIsLoading(true);
-        updateTransportation(transportationToShow.id, transportation).then((data) => {
+        updateDrivers(driversToShow.id, driver).then((data) => {
             console.log(data);
         }).finally(() => {
             setIsLoading(false);
@@ -26,7 +26,7 @@ function ManageTransportation(props) {
 
     return (
         <SkeletonModal
-            title={transportationToShow?.funcionario}
+            title={driversToShow?.nombre}
             closeAction={(e) => {
                 onClose();
             }}
@@ -66,24 +66,24 @@ function ManageTransportation(props) {
 
             {isEdit ? (
                 <Box>
-                    <SingleTransportation
+                    <SingleDrivers
                         submitAction={submitAction}
                         edit={true}
-                        transportation={transportationToShow}
+                        driver={driversToShow}
                         buttonName="Actualizar"
                     >
 
-                    </SingleTransportation>
+                    </SingleDrivers>
                 </Box>
             ) : (
                 <Box>
-                    <SingleTransportation
+                    <SingleDrivers
                         submitAction={null}
                         edit={false}
-                        transportation={transportationToShow}
+                        driver={driversToShow}
                     >
 
-                    </SingleTransportation>
+                    </SingleDrivers>
 
                 </Box>
             )}
@@ -93,4 +93,4 @@ function ManageTransportation(props) {
 
 }
 
-export default ManageTransportation;
+export default ManageDrivers;

@@ -25,58 +25,22 @@ const menuElements = [
 
   //GESTION DE TRANSPORTE
 
-  {
+ 
+ { 
     id: 1,
-    name: "Mantenimiento",
-    path: "/maintenance",
+    name: "hemeroteca",
+    path: "/hemeroteca",
     allowedRoles: ["test"],
-    icon: <EngineeringIcon />,
+    icon: <NewspaperIcon />,
   },
-  {
-    id: 2,
-    name: "Movilización",
-    path: "/movilization",
-    allowedRoles: ["test"],
-    icon: <EmojiTransportationIcon />,
-  },
-  {
-    id: 3,
-    name: "Inbox Solicitud Transporte",
-    path: "/movilization/inbox",
-    allowedRoles: ["test"],
-    icon: <EmailIcon />,
-  },
-
   { 
-     id: 4,
-     name: "suite",
-     path: "/suite",
-     allowedRoles: ["test"],
-     icon: <NewspaperIcon />,
-   },
-   { 
-    id: 5,
-    name: "users",
-    path: "/transportation/users",
+    id: 2,
+    name: "usuarios",
+    path: "/hemeroteca/users",
     allowedRoles: ["test"],
     icon: <PersonIcon />,
-  }
-  ,
-   { 
-    id: 6,
-    name: "funcionarios",
-    path: "/transportation/funcionarios",
-    allowedRoles: ["test"],
-    icon: <PersonIcon />,
-  }
-  ,
-   { 
-    id: 7,
-    name: "drivers",
-    path: "/transportation/drivers",
-    allowedRoles: ["test"],
-    icon: <PersonIcon />,
-  }
+  },
+  
 
 
   

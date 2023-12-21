@@ -53,7 +53,7 @@ function Bye() {
               backgroundColor: (theme) => theme.palette.buttons.main,
             }}
             onClick={() => {
-              navigate("/login");
+              navigate("/");
             }}
           >
             Volver a ingresar

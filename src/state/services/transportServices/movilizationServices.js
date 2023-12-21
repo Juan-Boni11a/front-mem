@@ -37,7 +37,7 @@ export const updateMovilization = async (id, body) => {
     try {
         console.log(id);
         console.log(body);
-        const response = await axios.put(`${serverUrl}/orden-movilizacion/actualizar/${id}`, body);
+        const response = await axios.put(`${serverUrl}/orden-movilizacion/${id}`, body);
         return response.data;
     } catch (error) {
         console.error("Error al actualizar la solicitud-mantenimiento por ID:", error);

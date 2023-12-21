@@ -1,20 +1,20 @@
 import { useState } from "react";
-import SkeletonModal from "../../pieces/SkeletonModal";
+import SkeletonModal from "../../../pieces/SkeletonModal";
 import { Button, Grid, Box } from "@mui/material";
-import SingleSupply from "./SingleSupply";
+import SingleFuncionario from "./SingleFuncionario";
 import { useSetRecoilState } from "recoil";
-import { isLoadingGeneralAtom } from "../../../state/atoms/generalAtom";
-import { updateSupply } from "../../../state/services/transportServices/supplyServices";
+import { isLoadingGeneralAtom } from "../../../../state/atoms/generalAtom";
+import { updateFuncionarios } from "../../../../state/services/transportServices/funcionarioServices";
 
-function ManageSupply(props) {
+function ManageFuncionarios(props) {
     const [isEdit, setisEdit] = useState(false);
-    const { onClose, supplyToShow } = props;
+    const { onClose, funcionarioToShow } = props;
     const setIsLoading = useSetRecoilState(isLoadingGeneralAtom);
 
-    const submitAction = (Supply) => {
+    const submitAction = (funcionario) => {
 
         setIsLoading(true);
-        updateSupply(supplyToShow.id, Supply).then((data) => {
+        updateFuncionarios(funcionarioToShow.id, funcionario).then((data) => {
             console.log(data);
         }).finally(() => {
             setIsLoading(false);
@@ -26,7 +26,7 @@ function ManageSupply(props) {
 
     return (
         <SkeletonModal
-            title={supplyToShow?.fechaAbastecimiento}
+            title={funcionarioToShow?.name}
             closeAction={(e) => {
                 onClose();
             }}
@@ -66,24 +66,24 @@ function ManageSupply(props) {
 
             {isEdit ? (
                 <Box>
-                    <SingleSupply
+                    <SingleFuncionario
                         submitAction={submitAction}
                         edit={true}
-                        supply={supplyToShow}
+                        funcionario={funcionarioToShow}
                         buttonName="Actualizar"
                     >
 
-                    </SingleSupply>
+                    </SingleFuncionario>
                 </Box>
             ) : (
                 <Box>
-                    <SingleSupply
+                    <SingleFuncionario
                         submitAction={null}
                         edit={false}
-                        supply={supplyToShow}
+                        funcionario={funcionarioToShow}
                     >
 
-                    </SingleSupply>
+                    </SingleFuncionario>
 
                 </Box>
             )}
@@ -93,4 +93,4 @@ function ManageSupply(props) {
 
 }
 
-export default ManageSupply;
+export default ManageFuncionarios;

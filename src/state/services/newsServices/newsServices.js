@@ -6,12 +6,13 @@ const serverUrl = 'http://localhost:8080';
 
 
 
-
 export const createNews = async (body) => {
     const formData = new FormData();
-    formData.append("imagen", body.imagen); // Agrega la imagen al FormData
-
+  
+   
+  
     // Agrega otros campos del formulario al FormData
+    formData.append("imagenes", body.imagenes);
     formData.append("fechaNoticia", body.fechaNoticia);
     formData.append("fechaRegistro", body.fechaRegistro);
     formData.append("nombreUsuario", body.nombreUsuario);
@@ -26,20 +27,24 @@ export const createNews = async (body) => {
     formData.append("resumen", body.resumen);
     formData.append("opinion", body.opinion);
     formData.append("comentario", body.comentario);
+
+    console.log("***********FORM DATA****************");
+    console.log(formData);
   
-
     const response = await axios.post(
-        `${serverUrl}/noticia/agregar`,
-        formData,
-        {
-            headers: {
-                "Content-Type": "multipart/form-data", // Importante indicar que es un formulario multipart
-            },
-        }
+      `${serverUrl}/noticia/agregar`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", // Importante indicar que es un formulario multipart
+        },
+      }
     );
-
+  
+ 
     return response;
-};
+  };
+  
 
 export const getAllNews = async() => {
     console.log(serverUrl);

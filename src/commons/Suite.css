@@ -1,0 +1,36 @@
+.suites-container {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .buttons-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .button {
+    display: flex;
+    flex-direction: column;
+    padding: 3%;
+    align-items: center;
+    margin: 0 10px;
+    text-align: center;
+    text-decoration: none;
+    color: #fff; /* Color del texto */
+  }
+  
+  .orange-button {
+    background-color: #ff9800; /* Color naranja */
+    border-radius: 10px;
+  }
+  
+  .purple-button {
+    background-color: #673ab7; /* Color morado */
+    border-radius: 10px;
+  }
+  
+  .button p {
+    margin-top: 10px;
+  }
+  
