@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Card, CardMedia, Divider } from "@mui/material";
+import React, { useState } from "react";
+import { Box, Button, Card, CardMedia, Divider, TextField } from "@mui/material";
 import { TitleStyled } from "../utils/StyledComponents";
 import MainLayout from "./MainLayout";
 import WorkspaceHeader from "./WorkspaceHeader";
@@ -9,12 +9,26 @@ function Home() {
   const messageHome = sessionStorage.getItem("message-home");
   const mainHome = sessionStorage.getItem("main-home");
 
+  const [autosDisponibles, setAutosDisponibles] = useState(30);
+  const [autosOcupados, setAutosOcupados] = useState(70);
+
   // Datos de ejemplo para el gráfico de pastel
   const data = [
-    { name: "Estado 1", value: 30 },
-    { name: "Estado 2", value: 45 },
-    { name: "Estado 3", value: 25 },
+    { name: "Autos Disponibles", value: autosDisponibles },
+    { name: "Autos Ocupados", value: autosOcupados },
   ];
+
+  const handleAutosDisponiblesChange = (event) => {
+    setAutosDisponibles(parseInt(event.target.value) || 0);
+  };
+
+  const handleAutosOcupadosChange = (event) => {
+    setAutosOcupados(parseInt(event.target.value) || 0);
+  };
+
+  const handleActualizarClick = () => {
+    // Puedes agregar lógica adicional si es necesario al actualizar los valores
+  };
 
   // Colores para las secciones del gráfico de pastel
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
@@ -41,6 +55,25 @@ function Home() {
           >
             {messageHome}
           </TitleStyled>
+
+          {/* Agregar controles para ingresar valores */}
+          <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "1rem" }}>
+            <TextField
+              label="Autos Disponibles"
+              type="number"
+              value={autosDisponibles}
+              onChange={handleAutosDisponiblesChange}
+            />
+            <TextField
+              label="Autos Ocupados"
+              type="number"
+              value={autosOcupados}
+              onChange={handleAutosOcupadosChange}
+            />
+            <Button variant="contained" onClick={handleActualizarClick}>
+              Actualizar
+            </Button>
+          </Box>
 
           {/* Agregar gráfico de pastel */}
           <Card

@@ -4,55 +4,27 @@ import { MenuItem, Select, Box, FormControl, RadioGroup, FormControlLabel, Radio
 import VehicleModal from "./VehicleModal";
 
 import { getAllVehicles } from '../../../state/services/transportServices/vehicleServices';
+import { getAllDrivers } from '../../../state/services/transportServices/driverServices';
+import DriverModal from "./DriverModal";
 
 function SingleMovilization(props) {
 
     const [estado, setEstado] = useState("Pendiente");
-
-    // Tipo de Movilización
     const [tipoMovilizacion, setTipoMovilizacion] = useState("");
-
-    // Para
     const [para, setPara] = useState("");
-
-    // Vigencia
     const [vigencia, setVigencia] = useState("");
-
-    // Conductor
     const [conductor, setConductor] = useState("");
-
-    // Vehículo
     const [vehiculo, setVehiculo] = useState("");
-
-    // Lugar de Emisión
+    const [driver, setDriver] = useState("");
     const [lugarEmision, setLugarEmision] = useState("");
-
-    // Fecha de Emisión
     const [fechaEmision, setFechaEmision] = useState("");
-
-    // Hora de Emisión
     const [horaEmision, setHoraEmision] = useState("");
-
-    // Lugar de Caducidad
     const [lugarCaducidad, setLugarCaducidad] = useState("");
-
-    // Fecha de Caducidad
     const [fechaCaducidad, setFechaCaducidad] = useState("");
-
-    // Hora de Caducidad
     const [horaCaducidad, setHoraCaducidad] = useState("");
-
-    // Motivo
     const [motivo, setMotivo] = useState("");
-
-    // Comentario
     const [comentario, setComentario] = useState("");
-
-    // Persona Autorizada
     const [personaAutorizada, setPersonaAutorizada] = useState("");
-
-
-
 
     const { submitAction, buttonName, movilization, edit } = props;
 
@@ -155,6 +127,39 @@ function SingleMovilization(props) {
         closeVehicleModal();
       };
 
+
+
+      const [showDriverModal, setShowDriverModal] = useState(false);
+      const [selectedDriver, setSelectedDriver] = useState(null);
+      const [driverList, setDriverList] = useState([]);
+  
+      const openDriverModal = () => {
+          setShowDriverModal(true);
+        
+          // Fetch the list of vehicles from your database using the imported function
+          getAllDrivers()
+            .then((data) => {
+              // Assuming your API response has an array of vehicles
+              const drivers = data || [];
+              setDriverList(drivers);
+            })
+            .catch((error) => {
+              console.error("Error fetching driver list:", error);
+              // Handle the error as needed (e.g., show an error message)
+            });
+        };
+      
+        const closeDriverModal = () => {
+          setShowDriverModal(false);
+        };
+      
+        const selectDriver = (driver) => {
+          setSelectedDriver(driver);
+          setDriver(driver.nombre); // Update vehiculo state with the selected vehicle name or ID
+          closeDriverModal();
+        };
+
+
        // Function to check if the current time is within the specified range
   const isTimeInRange = () => {
     const now = new Date();
@@ -242,7 +247,6 @@ function SingleMovilization(props) {
       </ButtonStyled>
       </div>
 
-      {/* ... (existing code) */}
 
       {showVehicleModal && (
         <VehicleModal
@@ -261,6 +265,39 @@ function SingleMovilization(props) {
           {isTimeInRange() && isDayMatching() && (
             <p style={{ color: 'red' }}>No puede Circular</p>
           )}
+
+          {/* Add more details as needed */}
+        </div>
+        )}
+
+
+
+<div>
+          <ButtonStyled
+        sx={{
+          backgroundColor: (theme) => theme.palette.primary.light,
+          paddingX: "1rem",
+          width: "30%",
+        }}
+        type="button"
+        onClick={openDriverModal}
+      >
+        Asignar Conductor
+      </ButtonStyled>
+      </div>
+
+      {showDriverModal && (
+        <DriverModal
+          driverList={driverList}
+          onSelectDriver={selectDriver}
+          onClose={closeDriverModal}
+        />
+      )}
+{selectedDriver && (
+        <div>
+          <h2>Información de Conductor Seleccionado:</h2>
+          <p>Nombre: {selectedDriver.nombre}</p>
+          <p>Contacto: {selectedDriver.telefono}</p>
 
           {/* Add more details as needed */}
         </div>

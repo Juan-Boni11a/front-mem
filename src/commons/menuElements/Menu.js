@@ -1,32 +1,13 @@
 import React from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { Box, Paper, Divider, Typography } from "@mui/material";
-
-import {
-  ButtonStyled,
-  HeaderLogo,
-} from "../../utils/StyledComponents";
+import { ButtonStyled, HeaderLogo } from "../../utils/StyledComponents";
 import MenuItems from "./MenuItems";
-import { currentUserAtom } from "../../state/atoms/generalAtom";
-import { useRecoilState } from "recoil";
 import { DownloadOutlined } from "@mui/icons-material";
-import { asyncCloseSession } from "../../state/services/authServices/usersServices";
 
 export default function Menu(props) {
   const logoFooter = sessionStorage.getItem("logo-footer");
-
   const { open } = props;
-  const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useRecoilState(currentUserAtom);
-
-  const closeSession = () => {
-    asyncCloseSession();
-    sessionStorage.setItem("token", "");
-    axios.defaults.headers.common["Authorization"] = "";
-    setCurrentUser(null);
-    navigate("/logout");
-  };
+  
 
   return (
     <Paper
@@ -45,16 +26,11 @@ export default function Menu(props) {
         }}
       >
         <Typography variant="overline">Bienvenid@</Typography>
-        <Typography
-          variant="subtitle2"
-          sx={{ color: (theme) => theme.palette.buttons.light }}
-        >
-          {`${currentUser.firstName ?? ""} ${currentUser.lastName ?? ""}`}
+        <Typography variant="subtitle2">
+          {/* User information goes here */}
         </Typography>
       </Box>
 
-
-      
       <Box sx={{ height: "60vh", maxHeight: "45vh", overflowY: "auto" }}>
         <MenuItems
           open={open}
@@ -62,6 +38,7 @@ export default function Menu(props) {
           userPermissions={props.userPermissions}
         />
       </Box>
+
       <Box
         sx={{
           textAlign: "center",
@@ -71,7 +48,7 @@ export default function Menu(props) {
           justifyContent: "space-around",
         }}
       >
-        <a href="/manual/ManualUsuario.pdf" target="_blank">
+        <a href="/manual/ManualUsuario.pdf" target="_blank" rel="noopener noreferrer">
           <ButtonStyled startIcon={<DownloadOutlined />}>
             Manual de Usuario
           </ButtonStyled>
@@ -92,13 +69,14 @@ export default function Menu(props) {
               backgroundColor: (theme) => theme.palette.buttons.main,
             }}
             onClick={() => {
-              closeSession();
+              // Handle logout or session closure
             }}
           >
             Cerrar Sesion
           </ButtonStyled>
         </Box>
       </Box>
+
       <Box
         sx={{
           justifyContent: "center",

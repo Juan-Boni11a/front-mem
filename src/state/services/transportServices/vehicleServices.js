@@ -13,6 +13,23 @@ export const getAllVehicles = async() => {
     return response.data;
 }
 
+export const getAllOccupied = async() => {
+    console.log(serverUrl);
+    const response = await axios.get(
+        `${serverUrl}/vehiculo/ocupados`
+    );
+
+    return response.data;
+}
+export const getAllBusy = async() => {
+    console.log(serverUrl);
+    const response = await axios.get(
+        `${serverUrl}/vehiculo/disponibles`
+    );
+
+    return response.data;
+}
+
 export const getVehiclesById = async (id) => {
     try {
         const response = await axios.get(`${serverUrl}/vehiculo/Vehicles/obtenerConductor/${id}`);

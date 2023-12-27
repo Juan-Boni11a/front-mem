@@ -21,6 +21,11 @@ function AllNews() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5); // Adjust the number of rows per page as needed
 
+    const userRoles = JSON.parse(sessionStorage.getItem("userRoles"));
+
+    // Función para verificar si el usuario tiene el rol específico
+    const hasRole = (roleToCheck) => userRoles.includes(roleToCheck);
+
     useEffect(() => {
         getNews();
     }, []);
@@ -124,16 +129,18 @@ function AllNews() {
                     textAlign: "center",
                 }}
             >
-                <ButtonStyled
-                    sx={{
-                        backgroundColor: (theme) => theme.palette.primary.light,
-                        margin: 1,
-                        width: "30%",
-                    }}
-                    onClick={callOpenNewsForm}
-                >
-                    Nuevo
-                </ButtonStyled>
+                {hasRole("Hemeroteca User") ? null : (
+                    <ButtonStyled
+                        sx={{
+                            backgroundColor: (theme) => theme.palette.primary.light,
+                            margin: 1,
+                            width: "30%",
+                        }}
+                        onClick={callOpenNewsForm}
+                    >
+                        Nuevo
+                    </ButtonStyled>
+                )}
             </Box>
 
             <ModalContainer open={openNewsForm}>

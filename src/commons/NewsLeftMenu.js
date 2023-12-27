@@ -30,14 +30,14 @@ const menuElements = [
     id: 1,
     name: "hemeroteca",
     path: "/hemeroteca",
-    allowedRoles: ["test"],
+    allowedRoles: ["Hemeroteca User","Hemeroteca Admin"],
     icon: <NewspaperIcon />,
   },
   { 
     id: 2,
     name: "usuarios",
     path: "/hemeroteca/users",
-    allowedRoles: ["test"],
+    allowedRoles: ["Hemeroteca Admin"],
     icon: <PersonIcon />,
   },
   
@@ -47,55 +47,16 @@ const menuElements = [
 ];
 
 function LeftMenu(props) {
-  const { window, handleDrawerToggle, mobileOpen } = props;
+  // Obtén la información sobre los roles del usuario
+  const userRoles = JSON.parse(sessionStorage.getItem("userRoles")) || [];
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
-  const currentUser = useRecoilValue(currentUserAtom);
-
-  const setIsLoadingAllPage = useSetRecoilState(isLoadingAllPageAtom);
-
-  const [userPermissions, setUserPermission] = useState([]);
-
-  const [menu, setMenu] = useState([]);
-
-  useEffect(() => {
-
-    const loadInitialData = async () => {
-      const permissions = currentUser.rolesPermissions;
-      let permissionsToAdd = [];
-      permissions.forEach((p) => {
-        permissionsToAdd = [...permissionsToAdd, ...p.permissions];
-      });
-
-      const auxMenu = menuElements?.filter((me) => {
-        for (let permission of me.allowedRoles) {
-          if (permissionsToAdd.includes(permission)) return true;
-        }
-        return false;
-      });
-      
-      setUserPermission(permissionsToAdd);
-      setMenu(auxMenu);
-    }
-
-
-    if (currentUser) {
-      setIsLoadingAllPage(true);
-
-      loadInitialData()
-        .then()
-        .finally(_ => setIsLoadingAllPage(false));
-    }
-  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Filtra los elementos de menú según los roles del usuario
+  const filteredMenu = menuElements.filter(menuItem =>
+    menuItem.allowedRoles.some(role => userRoles.includes(role))
+  );
 
   return (
-    <Box
-      component="nav"
-      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      aria-label="mailbox folders"
-    >
+    <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
       <Drawer
         variant="permanent"
         sx={{
@@ -109,29 +70,11 @@ function LeftMenu(props) {
         open
       >
         <MenuHeader />
-        <Menu menu={menu} userPermissions={userPermissions} />
+        <Menu menu={filteredMenu} />
       </Drawer>
-      <Drawer
-        container={container}
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-          },
-        }}
-      >
-        <MenuHeader handleDrawerToggle={handleDrawerToggle} />
-        <Menu menu={menu} userPermissions={userPermissions} />
-      </Drawer>
+      {/* Resto del código... */}
     </Box>
-  )
+  );
 }
 
 export default LeftMenu

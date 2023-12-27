@@ -26,12 +26,14 @@ import MovilizationInbox from "./components/Transport/movilization/MovilizationI
 import Suite from "./commons/Suite";
 import HelloTransport from "./commons/HelloTransport";
 import SingleMovilization from "./components/Transport/movilization/Approval";
-import AllUsers from "./components/Hemeroteca/HemerotecaAdmin/users/AllNewsUsers";
 import AllFuncionarios from "./components/Transport/TransportAdmin/funcionarios/AllFuncionarios";
 import AllDrivers from "./components/Transport/TransportAdmin/drivers/AllDrivers";
 import NewsHome from "./commons/NewsHome";
 import NewsHello from "./commons/NewsHello";
 import AllNewsUsers from "./components/Hemeroteca/HemerotecaAdmin/users/AllNewsUsers";
+import AllUsers from "./components/Transport/TransportAdmin/users/AllUsers";
+import ProtectedRoute from "./ProtectedRoute";
+import MaintenanceInbox from "./components/Transport/maintenance/MaintenanceInbox";
 
 
 const redirectNotAuth = () => {
@@ -94,6 +96,7 @@ function App() {
     };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+
   const [user, setUser] = useState(null);
 
   return (
@@ -133,6 +136,8 @@ function App() {
           />
           <Route exact path="/transport/login" element={<HelloTransport setUser={setUser} />} />
           <Route exact path="/hemeroteca/login" element={<NewsHello setUser={setUser} />} />
+
+
           <Route exact path="/logout" element={<Bye />} />
           <Route exact path="/signin-oidc" element={<AutoLoginCheck />} />
 
@@ -145,6 +150,18 @@ function App() {
                 allowedRoles={["test"]}
               >
                 <AllMaintenance />
+              </PrivateRouteRedirect>
+            }
+          />
+
+<Route
+            exact path="/maintenance/inbox"
+            element={
+              <PrivateRouteRedirect
+                routeName="maintenance/inbox"
+                allowedRoles={["test"]}
+              >
+                <MaintenanceInbox />
               </PrivateRouteRedirect>
             }
           />
@@ -197,6 +214,8 @@ function App() {
               </PrivateRouteRedirect>
             }
           />
+
+
 
           <Route
             exact path="/transportation/funcionarios"

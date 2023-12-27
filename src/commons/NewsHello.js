@@ -34,6 +34,7 @@ function NewsHello({ setUser }) {
       setUser(user);
       console.log(user);
         // Autenticación exitosa, puedes manejar el resultado aquí
+        sessionStorage.setItem("userRoles", JSON.stringify(user.roles));
         console.log('Login exitoso');
         navigate("/hemeroteca-home");
         

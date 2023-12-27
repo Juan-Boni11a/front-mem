@@ -29,36 +29,36 @@ const menuElements = [
     id: 1,
     name: "Mantenimiento",
     path: "/maintenance",
-    allowedRoles: ["test"],
+    allowedRoles: ["user","admin"],
     icon: <EngineeringIcon />,
   },
   {
     id: 2,
     name: "Movilización",
     path: "/movilization",
-    allowedRoles: ["test"],
+    allowedRoles: ["user","admin"],
     icon: <EmojiTransportationIcon />,
   },
   {
     id: 3,
-    name: "Inbox Solicitud Transporte",
+    name: "Inbox Solicitud Movilizacion",
     path: "/movilization/inbox",
-    allowedRoles: ["test"],
+    allowedRoles: ["admin"],
+    icon: <EmailIcon />,
+  },
+  {
+    id: 4,
+    name: "Inbox Solicitud Mantenimiento",
+    path: "/maintenance/inbox",
+    allowedRoles: ["admin"],
     icon: <EmailIcon />,
   },
 
-  { 
-     id: 4,
-     name: "suite",
-     path: "/suite",
-     allowedRoles: ["test"],
-     icon: <NewspaperIcon />,
-   },
    { 
     id: 5,
     name: "users",
     path: "/transportation/users",
-    allowedRoles: ["test"],
+    allowedRoles: ["admin"],
     icon: <PersonIcon />,
   }
   ,
@@ -66,7 +66,7 @@ const menuElements = [
     id: 6,
     name: "funcionarios",
     path: "/transportation/funcionarios",
-    allowedRoles: ["test"],
+    allowedRoles: ["admin"],
     icon: <PersonIcon />,
   }
   ,
@@ -74,7 +74,7 @@ const menuElements = [
     id: 7,
     name: "drivers",
     path: "/transportation/drivers",
-    allowedRoles: ["test"],
+    allowedRoles: ["admin"],
     icon: <PersonIcon />,
   }
 
@@ -82,92 +82,36 @@ const menuElements = [
   
 ];
 
-function LeftMenu(props) {
-  const { window, handleDrawerToggle, mobileOpen } = props;
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
-  const currentUser = useRecoilValue(currentUserAtom);
-
-  const setIsLoadingAllPage = useSetRecoilState(isLoadingAllPageAtom);
-
-  const [userPermissions, setUserPermission] = useState([]);
-
-  const [menu, setMenu] = useState([]);
-
-  useEffect(() => {
-
-    const loadInitialData = async () => {
-      const permissions = currentUser.rolesPermissions;
-      let permissionsToAdd = [];
-      permissions.forEach((p) => {
-        permissionsToAdd = [...permissionsToAdd, ...p.permissions];
-      });
-
-      const auxMenu = menuElements?.filter((me) => {
-        for (let permission of me.allowedRoles) {
-          if (permissionsToAdd.includes(permission)) return true;
-        }
-        return false;
-      });
-      
-      setUserPermission(permissionsToAdd);
-      setMenu(auxMenu);
-    }
-
-
-    if (currentUser) {
-      setIsLoadingAllPage(true);
-
-      loadInitialData()
-        .then()
-        .finally(_ => setIsLoadingAllPage(false));
-    }
-  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  return (
-    <Box
-      component="nav"
-      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      aria-label="mailbox folders"
-    >
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: "none", sm: "block" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-          },
-          border: "none",
-        }}
-        open
-      >
-        <MenuHeader />
-        <Menu menu={menu} userPermissions={userPermissions} />
-      </Drawer>
-      <Drawer
-        container={container}
-        variant="temporary"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{
-          keepMounted: true,
-        }}
-        sx={{
-          display: { xs: "block", sm: "none" },
-          "& .MuiDrawer-paper": {
-            boxSizing: "border-box",
-            width: drawerWidth,
-          },
-        }}
-      >
-        <MenuHeader handleDrawerToggle={handleDrawerToggle} />
-        <Menu menu={menu} userPermissions={userPermissions} />
-      </Drawer>
-    </Box>
-  )
-}
-
-export default LeftMenu
+  function LeftMenu(props) {
+    // Obtén la información sobre los roles del usuario
+    const userRoles = JSON.parse(sessionStorage.getItem("userRoles")) || [];
+  
+    // Filtra los elementos de menú según los roles del usuario
+    const filteredMenu = menuElements.filter(menuItem =>
+      menuItem.allowedRoles.some(role => userRoles.includes(role))
+    );
+  
+    return (
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: "none", sm: "block" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+            border: "none",
+          }}
+          open
+        >
+          <MenuHeader />
+          <Menu menu={filteredMenu} />
+        </Drawer>
+        {/* Resto del código... */}
+      </Box>
+    );
+  }
+  
+  export default LeftMenu;
