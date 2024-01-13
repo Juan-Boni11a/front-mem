@@ -23,9 +23,24 @@ export const getUsersById = async (id) => {
     }
 }
 
+export const getAdminUsers = async() => {
+   
+    try {
+    const response = await axios.get(
+        `${serverUrl}/transportation/users/por-rol/${"admin"}`
+    );
+    
+    return response.data;
+    }
+    catch (error) {
+        console.error("Error al obtener Usuario por Rol:", error);
+        throw error;
+    }
+}
+
 export const createUsers = async(body) =>{
     const response = await axios.post(
-        `${serverUrl}/transportation/users`,
+        `${serverUrl}/transportation/users/`,
         body
     );
     

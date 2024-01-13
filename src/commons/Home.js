@@ -1,16 +1,51 @@
-import React, { useState } from "react";
-import { Box, Button, Card, CardMedia, Divider, TextField } from "@mui/material";
-import { TitleStyled } from "../utils/StyledComponents";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardMedia,
+  Divider,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@mui/material";
+import { StyledTableCell, StyledTableRow, TitleStyled } from "../utils/StyledComponents";
 import MainLayout from "./MainLayout";
 import WorkspaceHeader from "./WorkspaceHeader";
 import { PieChart, Pie, Legend, Tooltip, Cell } from "recharts";
+import { getAllAvailable, getAllBusy } from "../state/services/transportServices/vehicleServices";
+
+import { getAllMovilization } from "../state/services/transportServices/movilizationServices";
+import { allMovilizationAtom } from "../state/atoms/movilizationAtoms";
+import { useRecoilState } from "recoil";
+import { Edit } from "@mui/icons-material";
 
 function Home() {
-  const messageHome = sessionStorage.getItem("message-home");
+
+  const [actualMovilizationList, setActualMovilizationList] = useRecoilState(allMovilizationAtom);
+
+  useEffect(() => {
+    getMovilization();
+  });
+
+  const getMovilization = () => {
+    getAllMovilization().then((data) => {
+      setActualMovilizationList(data);
+    });
+  };
+
+
+
+
   const mainHome = sessionStorage.getItem("main-home");
 
-  const [autosDisponibles, setAutosDisponibles] = useState(30);
-  const [autosOcupados, setAutosOcupados] = useState(70);
+  const [autosDisponibles, setAutosDisponibles] = useState(0);
+  const [autosOcupados, setAutosOcupados] = useState(0);
 
   // Datos de ejemplo para el gráfico de pastel
   const data = [
@@ -18,17 +53,43 @@ function Home() {
     { name: "Autos Ocupados", value: autosOcupados },
   ];
 
-  const handleAutosDisponiblesChange = (event) => {
-    setAutosDisponibles(parseInt(event.target.value) || 0);
+
+
+  const handleActualizarClick = async () => {
+    try {
+      // Hacer la llamada al servicio de vehículos disponibles
+      const responseAvailable = await getAllAvailable();
+
+      // Actualizar el estado con los valores obtenidos de vehículos disponibles
+      setAutosDisponibles(responseAvailable);
+
+      // Hacer la llamada al servicio de vehículos ocupados
+      const responseBusy = await getAllBusy();
+
+      // Actualizar el estado con los valores obtenidos de vehículos ocupados
+      setAutosOcupados(responseBusy);
+    } catch (error) {
+      console.error("Error al obtener datos:", error);
+    }
   };
 
-  const handleAutosOcupadosChange = (event) => {
-    setAutosOcupados(parseInt(event.target.value) || 0);
-  };
+  useEffect(() => {
+    // Hacer la llamada a los servicios cuando el componente se monte
+    const fetchData = async () => {
+      try {
+        const responseAvailable = await getAllAvailable();
+        setAutosDisponibles(responseAvailable);
 
-  const handleActualizarClick = () => {
-    // Puedes agregar lógica adicional si es necesario al actualizar los valores
-  };
+        const responseBusy = await getAllBusy();
+        setAutosOcupados(responseBusy);
+      } catch (error) {
+        console.error("Error al obtener datos:", error);
+      }
+    };
+
+    fetchData();
+  }, []); // El segundo argumento [] asegura que useEffect se ejecute solo una vez al montar el componente
+
 
   // Colores para las secciones del gráfico de pastel
   const colors = ["#8884d8", "#82ca9d", "#ffc658"];
@@ -53,27 +114,21 @@ function Home() {
               color: (theme) => theme.palette.primary.main,
             }}
           >
-            {messageHome}
+            {"Sistema Gestión de Transporte"}
           </TitleStyled>
 
           {/* Agregar controles para ingresar valores */}
           <Box sx={{ display: "flex", justifyContent: "space-around", marginBottom: "1rem" }}>
-            <TextField
-              label="Autos Disponibles"
-              type="number"
-              value={autosDisponibles}
-              onChange={handleAutosDisponiblesChange}
-            />
-            <TextField
-              label="Autos Ocupados"
-              type="number"
-              value={autosOcupados}
-              onChange={handleAutosOcupadosChange}
-            />
+
             <Button variant="contained" onClick={handleActualizarClick}>
               Actualizar
             </Button>
           </Box>
+
+          {/* Agregar encabezado */}
+          <Typography variant="h5" sx={{ marginBottom: "1rem" }}>
+            Disponibilidad de Vehículos
+          </Typography>
 
           {/* Agregar gráfico de pastel */}
           <Card
@@ -103,6 +158,46 @@ function Home() {
               <Tooltip />
               <Legend />
             </PieChart>
+
+
+ {/* Agregar encabezado */}
+ <Typography variant="h5" sx={{ marginBottom: "1rem" }}>
+            Ordenes de Movilización en Curso
+          </Typography>
+            <Box sx={{ width: '100%', marginTop: '2vh', maxHeight: '70%', overflowY: 'auto' }}>
+              <TableContainer component={Paper} sx={{ borderRadius: '10px', height: '100%' }}>
+                <Table sx={{ minWidth: 700, height: '100%' }}>
+                  <TableHead>
+                    <TableRow>
+
+                      <StyledTableCell> Conductor </StyledTableCell>
+                      <StyledTableCell> Vehiculo </StyledTableCell>
+                      <StyledTableCell> Número de Orden </StyledTableCell>
+
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {actualMovilizationList?.map((cat, index) => {
+                      const dotColor = cat.estado === 'Aprobado' ? 'green' : (cat.estado === 'Pendiente' ? 'orange' : 'red');
+
+
+                      return (
+                        <StyledTableRow key={cat.id}>
+
+
+                          <StyledTableCell> {cat.conductor} </StyledTableCell>
+                          <StyledTableCell> {cat.vehiculo} </StyledTableCell>
+                          <StyledTableCell> {cat.nOrden} </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </Box>
+
+
+
 
             <CardMedia
               sx={{ padding: "1em 1em 0 1em", objectFit: "contain" }}

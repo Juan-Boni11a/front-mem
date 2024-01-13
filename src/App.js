@@ -15,25 +15,21 @@ import Bye from "./commons/Bye";
 import axios from "axios";
 
 import { errorMessageAtom } from "./state/atoms/generalAtom";
-import Test from "./components/test/Test";
-
 
 import AllNews from "./components/Hemeroteca/AllNews";
 import AllMaintenance from "./components/Transport/maintenance/AllMaintenance";
 import AllMovilization from "./components/Transport/movilization/AllMovilization";
-import Hello from "./commons/HelloTransport";
-import MovilizationInbox from "./components/Transport/movilization/MovilizationInbox";
+import MovilizationInbox from "./components/Transport/movilization/inbox/MovilizationInbox";
 import Suite from "./commons/Suite";
 import HelloTransport from "./commons/HelloTransport";
-import SingleMovilization from "./components/Transport/movilization/Approval";
 import AllFuncionarios from "./components/Transport/TransportAdmin/funcionarios/AllFuncionarios";
 import AllDrivers from "./components/Transport/TransportAdmin/drivers/AllDrivers";
 import NewsHome from "./commons/NewsHome";
 import NewsHello from "./commons/NewsHello";
 import AllNewsUsers from "./components/Hemeroteca/HemerotecaAdmin/users/AllNewsUsers";
 import AllUsers from "./components/Transport/TransportAdmin/users/AllUsers";
-import ProtectedRoute from "./ProtectedRoute";
 import MaintenanceInbox from "./components/Transport/maintenance/MaintenanceInbox";
+import AllVehicles from "./components/Transport/TransportAdmin/vehicles/AllVehicles";
 
 
 const redirectNotAuth = () => {
@@ -113,17 +109,8 @@ function App() {
             }
           />
 
-          <Route
-            exact
-            path="/hemeroteca-home"
-            element={
-              <PrivateRouteRedirect routeName="hemeroteca-home">
-                <NewsHome />
-              </PrivateRouteRedirect>
-            }
-          />
-
-
+          {"TRANSPORTE"}
+          <Route exact path="/transport/login" element={<HelloTransport setUser={setUser} />} />
 
           <Route
             exact
@@ -134,8 +121,7 @@ function App() {
               </PrivateRouteRedirect>
             }
           />
-          <Route exact path="/transport/login" element={<HelloTransport setUser={setUser} />} />
-          <Route exact path="/hemeroteca/login" element={<NewsHello setUser={setUser} />} />
+
 
 
           <Route exact path="/logout" element={<Bye />} />
@@ -154,7 +140,7 @@ function App() {
             }
           />
 
-<Route
+          <Route
             exact path="/maintenance/inbox"
             element={
               <PrivateRouteRedirect
@@ -177,19 +163,6 @@ function App() {
               </PrivateRouteRedirect>
             }
           />
-
-          <Route
-            exact path="/orden-movilizacion/crear"
-            element={
-              <PrivateRouteRedirect
-                routeName="crear"
-                allowedRoles={["test"]}
-              >
-                <SingleMovilization />
-              </PrivateRouteRedirect>
-            }
-          />
-
           <Route
             exact path="/movilization/inbox"
             element={
@@ -202,7 +175,7 @@ function App() {
             }
           />
 
-
+          {"PARAMETRIZACIÓN"}
           <Route
             exact path="/transportation/users"
             element={
@@ -215,20 +188,19 @@ function App() {
             }
           />
 
-
-
-          <Route
-            exact path="/transportation/funcionarios"
+<Route
+            exact path="/transportation/vehicles"
             element={
               <PrivateRouteRedirect
                 routeName="inbox"
                 allowedRoles={["test"]}
               >
-                <AllFuncionarios />
+                <AllVehicles />
               </PrivateRouteRedirect>
             }
           />
-            <Route
+         
+          <Route
             exact path="/transportation/drivers"
             element={
               <PrivateRouteRedirect
@@ -240,6 +212,20 @@ function App() {
             }
           />
 
+
+          {"HEMEROTECA"}
+
+          <Route exact path="/hemeroteca/login" element={<NewsHello setUser={setUser} />} />
+
+          <Route
+            exact
+            path="/hemeroteca-home"
+            element={
+              <PrivateRouteRedirect routeName="hemeroteca-home">
+                <NewsHome />
+              </PrivateRouteRedirect>
+            }
+          />
 
           <Route
             exact path="/hemeroteca"
@@ -253,7 +239,7 @@ function App() {
             }
           />
 
-<Route
+          <Route
             exact path="/hemeroteca/users"
             element={
               <PrivateRouteRedirect

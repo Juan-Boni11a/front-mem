@@ -23,6 +23,16 @@ export const getMovilizationById = async (id) => {
     }
 }
 
+export const getMovilizationByMail = async (mail) => {
+    try {
+        const response = await axios.get(`${serverUrl}/orden-movilizacion/por-mail/${mail}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error al obtener la solicitud-mantenimiento por Mail:", error);
+        throw error;
+    }
+}
+
 export const createMovilization = async(body) =>{
     const response = await axios.post(
         `${serverUrl}/orden-movilizacion/agregar`,

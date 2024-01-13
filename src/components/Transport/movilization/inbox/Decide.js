@@ -1,13 +1,13 @@
 import { useState } from "react";
-import SkeletonModal from "../../pieces/SkeletonModal";
-import { Button, Grid, Box } from "@mui/material";
+import SkeletonModal from "../../../pieces/SkeletonModal";
+import { Box } from "@mui/material";
 import Approval from "./Approval";
 import { useSetRecoilState } from "recoil";
-import { isLoadingGeneralAtom } from "../../../state/atoms/generalAtom";
-import { updateMovilization } from "../../../state/services/transportServices/movilizationServices";
+import { isLoadingGeneralAtom } from "../../../../state/atoms/generalAtom";
+import { updateMovilization } from "../../../../state/services/transportServices/movilizationServices";
 
 function Decide(props) {
-    const [isEdit, setisEdit] = useState(true);
+    const [isEdit] = useState(true);
     const { onClose, movilizationToShow } = props;
     const setIsLoading = useSetRecoilState(isLoadingGeneralAtom);
 

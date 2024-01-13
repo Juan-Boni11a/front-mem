@@ -1,98 +1,49 @@
 import { useEffect, useState } from "react";
 import { ModalTextField, ModalFormControl, InputLabelGreyStyled, ButtonStyled } from "../../../utils/StyledComponents";
 import { MenuItem, Select, Box } from "@mui/material";
+import { getAdminUsers, getAllUsers } from "../../../state/services/transportServices/userServices";
 
 function SingleMovilization(props) {
 
-    // Tipo de Movilización
+    //Declaración de Variables
     const [tipoMovilizacion, setTipoMovilizacion] = useState("");
-
-    // Para
     const [para, setPara] = useState("");
-
-    // Vigencia
+    const [solicitante, setSolicitante] = useState("");
+    const [mailSolicitante, setMailSolicitante] = useState("");
     const [vigencia, setVigencia] = useState("");
-
-    // Conductor
     const [conductor, setConductor] = useState("");
-
-    // Vehículo
     const [vehiculo, setVehiculo] = useState("");
-
-    // Lugar de Emisión
     const [lugarEmision, setLugarEmision] = useState("");
-
-    // Fecha de Emisión
     const [fechaEmision, setFechaEmision] = useState("");
-
-    // Hora de Emisión
     const [horaEmision, setHoraEmision] = useState("");
-
-    // Lugar de Caducidad
     const [lugarCaducidad, setLugarCaducidad] = useState("");
-
-    // Fecha de Caducidad
     const [fechaCaducidad, setFechaCaducidad] = useState("");
-
-    // Hora de Caducidad
     const [horaCaducidad, setHoraCaducidad] = useState("");
-
-    // Motivo
     const [motivo, setMotivo] = useState("");
-
-    // Comentario
     const [comentario, setComentario] = useState("");
-
-    // Persona Autorizada
     const [personaAutorizada, setPersonaAutorizada] = useState("");
-
-
 
 
     const { submitAction, buttonName, movilization, edit } = props;
 
     useEffect(() => {
         if (movilization) {
-            // Tipo de Movilización
             setTipoMovilizacion(movilization.tipoMovilizacion);
-
-            // Para
             setPara(movilization.para);
-
-            // Vigencia
+            setSolicitante(sessionStorage.getItem("userName") || "");
+            setMailSolicitante(sessionStorage.getItem("userMail") || "");
             setVigencia(movilization.vigencia);
-
-            // Conductor
             setConductor(movilization.conductor);
-
-            // Vehículo
             setVehiculo(movilization.vehiculo);
-
-            // Lugar de Emisión
             setLugarEmision(movilization.lugarEmision);
-
-            // Fecha de Emisión
             setFechaEmision(movilization.fechaEmision);
-
-            // Hora de Emisión
             setHoraEmision(movilization.horaEmision);
-
-            // Lugar de Caducidad
             setLugarCaducidad(movilization.lugarCaducidad);
-
-            // Fecha de Caducidad
             setFechaCaducidad(movilization.fechaCaducidad);
-
-            // Hora de Caducidad
             setHoraCaducidad(movilization.horaCaducidad);
-
-            // Motivo
             setMotivo(movilization.motivo);
-
-            // Persona Autorizada
+            setComentario(movilization.comentario);
             setPersonaAutorizada(movilization.personaAutorizada);
-
-
         }
     }, [movilization]);
 
@@ -100,6 +51,9 @@ function SingleMovilization(props) {
         return {
             tipoMovilizacion,
             para,
+            solicitante: sessionStorage.getItem("userName") || "",
+            mailSolicitante: sessionStorage.getItem("userMail") || "",
+            vigencia,
             vigencia,
             conductor,
             vehiculo,
@@ -116,80 +70,122 @@ function SingleMovilization(props) {
 
 
     }
+ //Obtener lista de jefes de transporte
+ const [adminUsers, setAdminUsers] = useState([]);
+    useEffect(() => {
+
+        async function fetchNombres() {
+          try {
+            const usersData = await getAdminUsers();
+            // Extraer los nombres
+            const usersNombres = usersData.map((user) => user.username);
+            setAdminUsers(usersNombres);
+          } catch (error) {
+            console.error('Error al cargar los Nombres:', error);
+            // Manejar el error según tus necesidades
+          }
+        }
+    
+        fetchNombres();
+      }, []);
+
+      const [errorFechaEmision, setErrorFechaEmision] = useState('');
+  const [errorFechaCaducidad, setErrorFechaCaducidad] = useState('');
+
+      const handleFechaEmisionChange = (e) => {
+        const selectedDate = e.target.value;
+        // Asegúrate de que la fecha seleccionada sea mayor o igual a la fecha actual
+        if (selectedDate >= getFechaActual()) {
+            setErrorFechaEmision("");
+          setFechaEmision(selectedDate);
+        } else {
+          // Puedes mostrar un mensaje de error o tomar otra acción
+          setErrorFechaEmision('Selecciona una fecha de emisión válida a partir de hoy');
+        }
+      };
+      const handleFechaCaducidadChange = (e) => {
+        const selectedDate = e.target.value;
+        // Asegúrate de que la fecha seleccionada sea mayor o igual a la fecha de emisión
+        if (selectedDate >= fechaEmision) {
+            setErrorFechaCaducidad("");
+          setFechaCaducidad(selectedDate);
+        } else {
+            setErrorFechaCaducidad('Selecciona una fecha de caducidad válida a partir de la fecha de emisión');
+        }
+      };
+    
+      const getFechaActual = () => {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
 
     return (
+
+
         <form onSubmit={(e) => {
             e.preventDefault();
             const movilization = buildMovilization();
             submitAction(movilization);
         }}>
+            
 
-
-            <ModalTextField
-                size="small"
-                label={"Tipo de Movilización"}
-                value={tipoMovilizacion}
-                required
-                disabled={!edit}
-                onChange={(e) => setTipoMovilizacion(e.target.value)}
-                InputLabelProps={{
-                    style: {
-                        color: "#1b365d",
-                        fontWeight: 900,
-                    },
-                }}
-            />
-
-            <ModalTextField
-                size="small"
-                label={"Para"}
-                value={para}
-                required
-                disabled={!edit}
-                onChange={(e) => setPara(e.target.value)}
-                InputLabelProps={{
-                    style: {
-                        color: "#1b365d",
-                        fontWeight: 900,
-                    },
-                }}
-            />
-
-            <ModalTextField
-                size="small"
-                label={"Vigencia"}
-                type="date"
-                value={vigencia}
-                required
-                disabled={!edit}
-                onChange={(e) => setVigencia(e.target.value)}
-                InputLabelProps={{
-                    shrink: true,
-                    style: {
-                        color: "#1b365d",
-                        fontWeight: 900,
-                    },
-                }}
-            />
-
-            <ModalFormControl>
-                <InputLabelGreyStyled id="conductor">Conductor</InputLabelGreyStyled>
+<ModalFormControl>
+                <InputLabelGreyStyled id="tipoMov">Tipo de Movilización</InputLabelGreyStyled>
                 <Select
                     size="small"
-                    labelId="conductor"
-                    value={conductor}
+                    labelId="tipoMovilizacion"
+                    value={tipoMovilizacion}
                     disabled={!edit}
-                    label="Conductor"
+                    label="Tipo de Movilización"
                     onChange={(e) => {
-                        setConductor(e.target.value);
+                        setTipoMovilizacion(e.target.value);
                     }}
                 >
-                    <MenuItem value={"Conductor1"}>Conductor 1</MenuItem>
-                    <MenuItem value={"Conductor2"}>Conductor 2</MenuItem>
+                    <MenuItem value={"Autoridad"}>Autoridad</MenuItem>
+                    <MenuItem value={"Patio"}>Patio</MenuItem>
+
                     {/* Otros valores para conductor */}
                 </Select>
             </ModalFormControl>
+            <ModalFormControl>
+                <InputLabelGreyStyled id="Para">Para</InputLabelGreyStyled>
+                <Select
+                    size="small"
+                    labelId="para"
+                    value={para}
+                    disabled={!edit}
+                    label="Para"
+                    onChange={(e) => {
+                        setPara(e.target.value);
+                    }}
+                >
+                    <MenuItem value={"Conductor"}>Conductor</MenuItem>
+                    <MenuItem value={"Funcionario"}>Funcionario</MenuItem>
+                    <MenuItem value={"Funcionario y Conductor"}>Funcionario y Conductor</MenuItem>
+                    {/* Otros valores para conductor */}
+                </Select>
+            </ModalFormControl>
+<ModalFormControl>
+                <InputLabelGreyStyled id="vigencia">Vigencia</InputLabelGreyStyled>
+                <Select
+                    size="small"
+                    labelId="vigencia"
+                    value={vigencia}
+                    disabled={!edit}
+                    label="Vigencia"
+                    onChange={(e) => {
+                        setVigencia(e.target.value);
+                    }}
+                >
+                    <MenuItem value={"Lunes a Viernes"}>Lunes a Viernes</MenuItem>
+                    <MenuItem value={"Lunes a Domingo"}>Lunes a Domingo</MenuItem>
 
+                    {/* Otros valores para conductor */}
+                </Select>
+            </ModalFormControl>
             <ModalTextField
                 size="small"
                 label={"Lugar de Emisión"}
@@ -204,7 +200,6 @@ function SingleMovilization(props) {
                     },
                 }}
             />
-
             <ModalTextField
                 size="small"
                 label={"Fecha de Emisión"}
@@ -212,7 +207,7 @@ function SingleMovilization(props) {
                 value={fechaEmision}
                 required
                 disabled={!edit}
-                onChange={(e) => setFechaEmision(e.target.value)}
+                onChange={handleFechaEmisionChange}
                 InputLabelProps={{
                     shrink: true,
                     style: {
@@ -221,22 +216,23 @@ function SingleMovilization(props) {
                     },
                 }}
             />
-
+             {errorFechaEmision && <div style={{ color: 'red' }}>{errorFechaEmision}</div>}
             <ModalTextField
                 size="small"
                 label={"Hora de Emisión"}
+                type="time"
                 value={horaEmision}
                 required
                 disabled={!edit}
                 onChange={(e) => setHoraEmision(e.target.value)}
                 InputLabelProps={{
+                    shrink: true,
                     style: {
                         color: "#1b365d",
                         fontWeight: 900,
                     },
                 }}
             />
-
             <ModalTextField
                 size="small"
                 label={"Lugar de Caducidad"}
@@ -251,7 +247,6 @@ function SingleMovilization(props) {
                     },
                 }}
             />
-
             <ModalTextField
                 size="small"
                 label={"Fecha de Caducidad"}
@@ -259,7 +254,7 @@ function SingleMovilization(props) {
                 value={fechaCaducidad}
                 required
                 disabled={!edit}
-                onChange={(e) => setFechaCaducidad(e.target.value)}
+                onChange={handleFechaCaducidadChange}
                 InputLabelProps={{
                     shrink: true,
                     style: {
@@ -268,22 +263,23 @@ function SingleMovilization(props) {
                     },
                 }}
             />
-
+            {errorFechaCaducidad && <div style={{ color: 'red' }}>{errorFechaCaducidad}</div>}
             <ModalTextField
                 size="small"
                 label={"Hora de Caducidad"}
+                type="time"
                 value={horaCaducidad}
                 required
                 disabled={!edit}
                 onChange={(e) => setHoraCaducidad(e.target.value)}
                 InputLabelProps={{
+                    shrink: true,
                     style: {
                         color: "#1b365d",
                         fontWeight: 900,
                     },
                 }}
             />
-
             <ModalTextField
                 size="small"
                 label={"Motivo"}
@@ -298,7 +294,6 @@ function SingleMovilization(props) {
                     },
                 }}
             />
-
             <ModalTextField
                 size="small"
                 label={"Comentario"}
@@ -314,24 +309,25 @@ function SingleMovilization(props) {
                 }}
             />
 
-            <ModalTextField
-                size="small"
-                label={"Persona Autorizada"}
-                value={personaAutorizada}
-                required
-                disabled={!edit}
-                onChange={(e) => setPersonaAutorizada(e.target.value)}
-                InputLabelProps={{
-                    style: {
-                        color: "#1b365d",
-                        fontWeight: 900,
-                    },
-                }}
-            />
-
-
-
-
+<ModalFormControl>
+        <InputLabelGreyStyled id="personaAutorizada">Persona Autorizada</InputLabelGreyStyled>
+        <Select
+          size="small"
+          labelId="personaAutorizadalabel"
+          value={personaAutorizada}
+          disabled={!edit}
+          label="Persona Autorizada"
+          onChange={(e) => {
+            setPersonaAutorizada(e.target.value);
+          }}
+        >
+          {adminUsers.map((user) => (
+            <MenuItem key={user} value={user}>
+              {user}
+            </MenuItem>
+          ))}
+        </Select>
+      </ModalFormControl>
 
             {edit &&
                 <Box
@@ -356,6 +352,7 @@ function SingleMovilization(props) {
                 </Box>
             }
         </form>
+
     );
 
 }

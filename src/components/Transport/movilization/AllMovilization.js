@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import {
     Box, TableContainer, Paper, Table, TableHead, TableRow,
     TableBody,
-    IconButton, Avatar
+    IconButton,
 } from "@mui/material";
 import { ModalContainer, StyledTableCell, StyledTableRow, ModalInputBox, ButtonStyled } from "../../../utils/StyledComponents";
 import MainLayout from "../../../commons/MainLayout";
 import WorkspaceHeader from "../../../commons/WorkspaceHeader";
-import { getAllMovilization } from "../../../state/services/transportServices/movilizationServices";
+import { getMovilizationByMail } from "../../../state/services/transportServices/movilizationServices";
 import AddMovilization from "./AddMovilization";
 import {  Edit } from "@mui/icons-material";
 import ManageMovilization from "./ManageMovilization";
@@ -23,10 +23,11 @@ function AllMovilization() {
 
     useEffect(() => {
         getMovilization();
-    }, []);
+    });
 
     const getMovilization = () => {
-        getAllMovilization().then((data) => {
+        const storedMail = sessionStorage.getItem("userMail");
+        getMovilizationByMail(storedMail).then((data) => {
             setActualMovilizationList(data)
             
         })
@@ -69,56 +70,58 @@ function AllMovilization() {
 
                             <TableRow>
 
-                                <StyledTableCell>
-                                    {" "}
-                                    <Box />
-                                </StyledTableCell>
-
-                                <StyledTableCell> Tipo </StyledTableCell>
-
-                                <StyledTableCell> Para </StyledTableCell>
-
-                                <StyledTableCell> Conductor </StyledTableCell>
+                            <StyledTableCell> Editar </StyledTableCell>      
+                <StyledTableCell> Número de Orden </StyledTableCell>
+                <StyledTableCell> Para </StyledTableCell>
+                <StyledTableCell> Vigencia </StyledTableCell>
+                <StyledTableCell> Estado </StyledTableCell>
 
                             </TableRow>
 
                         </TableHead>
-
-
                         <TableBody>
+              {actualMovilizationList?.map((cat, index) => {
+                const dotColor = cat.estado === 'Aprobado' ? 'green' : (cat.estado === 'Pendiente' ? 'orange' : 'red');
 
-                            {
-                                actualMovilizationList?.map((cat, index) => {
-                                    return (
-                                        <StyledTableRow key={cat.id}>
-                                            <StyledTableCell>
-                                                {""}
-                                                <IconButton
-                                                    size="small"
-                                                    sx={{ marginX: "auto" }}
-                                                    onClick={() => {
-                                                        callOpenManageForm(cat)
-                                                        console.log(cat);
-                                                        
-                                                    }}
 
-                                                >
-                                                    <Edit></Edit>
+                return (
+                  <StyledTableRow key={cat.id}>
+                    <StyledTableCell>
+                      {' '}
+                      <IconButton
+                        size="small"
+                        sx={{ marginX: 'auto' }}
+                        onClick={() => {
+                          callOpenManageForm(cat);
+                          console.log(cat);
+                        }}
+                      >
+                        <Edit></Edit>
+                      </IconButton>
+                    </StyledTableCell>
 
-                                                </IconButton>
-                                            </StyledTableCell>
-                                            <StyledTableCell>
-                                            <StyledTableCell> {cat.tipoMovilizacion} </StyledTableCell>
-                                            </StyledTableCell>
-                                            <StyledTableCell> {cat.para} </StyledTableCell>
-                                            <StyledTableCell> {cat.conductor} </StyledTableCell>
-                                        </StyledTableRow>
-                                    )
+                    <StyledTableCell> {cat.nOrden} </StyledTableCell>
 
-                                })
-                            }
+                    <StyledTableCell> {cat.para} </StyledTableCell>
 
-                        </TableBody>
+                    <StyledTableCell> {cat.vigencia} </StyledTableCell>
+                    <StyledTableCell>
+                      {cat.estado}{' '}
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          width: '10px',
+                          height: '10px',
+                          backgroundColor: dotColor,
+                          borderRadius: '50%',
+                          marginLeft: '5px',
+                        }}
+                      ></span>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                );
+              })}
+            </TableBody>s
 
                     </Table>
 

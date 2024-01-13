@@ -7,6 +7,7 @@ function SingleUser(props) {
  
     const [username, setUserName] = useState("");
     const [password, setPassword] = useState("");
+    const [rolId, setRolId] = useState("");
     const [roles, setRoles] = useState("");
 
     const { submitAction, buttonName, user, edit } = props;
@@ -18,6 +19,8 @@ function SingleUser(props) {
             setPassword(user.password);
 
             setRoles(user.roles);
+
+            setRolId(user.rolId);
         }
     }, [user]);
 
@@ -25,6 +28,7 @@ function SingleUser(props) {
         return {
             username,
             password,
+            rolId,
             roles,
         };
 
@@ -69,7 +73,22 @@ function SingleUser(props) {
                 }}
             />
 
-           
+<ModalFormControl>
+                <InputLabelGreyStyled id="roles">Rol</InputLabelGreyStyled>
+                <Select
+                    size="small"
+                    labelId="role"
+                    value={roles}
+                    disabled={!edit}
+                    label="Role"
+                    onChange={(e) => {
+                        setRolId(e.target.value);
+                    }}
+                >
+                    <MenuItem value={"user"}>Usuario</MenuItem>
+                    <MenuItem value={"admin"}>Administrador</MenuItem>
+                </Select>
+            </ModalFormControl>
 
             <ModalFormControl>
                 <InputLabelGreyStyled id="roles">Rol</InputLabelGreyStyled>

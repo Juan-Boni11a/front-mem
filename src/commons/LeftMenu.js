@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from 'react';
-
-import { useRecoilValue, useSetRecoilState } from "recoil";
-
-import {
-  currentUserAtom,
-  isLoadingAllPageAtom,
-} from "../state/atoms/generalAtom";
-
+import React from 'react';
 import Menu from "./menuElements/Menu";
 import MenuHeader from "./menuElements/MenuHeader";
-import NewspaperIcon from '@mui/icons-material/Newspaper';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import EmojiTransportationIcon from '@mui/icons-material/EmojiTransportation';
-import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
-import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+
 
 import { Box, Drawer } from '@mui/material';
 
@@ -29,7 +20,7 @@ const menuElements = [
     id: 1,
     name: "Mantenimiento",
     path: "/maintenance",
-    allowedRoles: ["user","admin"],
+    allowedRoles: ["admin"],
     icon: <EngineeringIcon />,
   },
   {
@@ -50,7 +41,7 @@ const menuElements = [
     id: 4,
     name: "Inbox Solicitud Mantenimiento",
     path: "/maintenance/inbox",
-    allowedRoles: ["admin"],
+    allowedRoles: ["xxx"],
     icon: <EmailIcon />,
   },
 
@@ -64,10 +55,10 @@ const menuElements = [
   ,
    { 
     id: 6,
-    name: "funcionarios",
-    path: "/transportation/funcionarios",
+    name: "vehicles",
+    path: "/transportation/vehicles",
     allowedRoles: ["admin"],
-    icon: <PersonIcon />,
+    icon: <DirectionsCarIcon />,
   }
   ,
    { 
@@ -109,7 +100,6 @@ const menuElements = [
           <MenuHeader />
           <Menu menu={filteredMenu} />
         </Drawer>
-        {/* Resto del código... */}
       </Box>
     );
   }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Card, CardMedia, Divider, TextField, Typography } from "@mui/material";
+import { Box, Card, CardMedia, Divider, TextField } from "@mui/material";
 
 import { ButtonStyled, TitleStyled } from "../utils/StyledComponents";
 
@@ -15,6 +15,7 @@ function HelloTransport({ setUser }) {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
 
   const handleLogin = async () => {
     try {
@@ -35,6 +36,10 @@ function HelloTransport({ setUser }) {
       console.log(user);
         // Autenticación exitosa, puedes manejar el resultado aquí
         sessionStorage.setItem("userRoles", JSON.stringify(user.roles));
+        sessionStorage.setItem("userName", user.username);
+        sessionStorage.setItem("userMail", user.mail);
+        console.log(user.mail);
+
         console.log('Login exitoso');
         navigate("/transportation-home");
         
